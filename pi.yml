@@ -8,7 +8,49 @@
       apt:
         update_cache: yes
         upgrade: yes
+    - name: install pip
+      apt:
+        name: python-pip
     - name: install docker
       shell: curl -sSL https://get.docker.com | sh
       args:
         creates: /usr/bin/docker
+    - name: install docker package (needed by Ansible)
+      pip:
+        name: docker
+
+- name: run magic mirror
+  hosts: magicmirror
+  remote_user: pi
+  become: yes
+  vars:
+    magicmirror_root: /etc/magicmirror
+    magicmirror_conf: "{{ magicmirror_root }}/config"
+    magicmirror_modules: "{{ magicmirror_root }}/modules"
+  tasks:
+    - name: create magic mirror directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: pi
+      with_items:
+        - "{{ magicmirror_root }}"
+        - "{{ magicmirror_conf }}"
+        - "{{ magicmirror_modules }}"
+    - name: copy config.js
+      copy:
+        src: ./config.js
+        dest: "{{ magicmirror_conf }}"
+        owner: pi
+    - name: run in server mode as a docker container
+      docker_container:
+        name: magicmirror
+        image: bastilimbach/docker-magicmirror:raspberry
+        restart_policy: unless-stopped
+        ports:
+          - "80:8080"
+        pull: true
+        volumes:
+          - "{{ magicmirror_conf }}:/opt/magic_mirror/config"
+          - "{{ magicmirror_modules }}:/opt/magic_mirror/modules"
+          
