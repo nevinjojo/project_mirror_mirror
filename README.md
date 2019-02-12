@@ -27,7 +27,8 @@ ansible-playbook pi.yml -k
 
 For now we're authenticating using a password rather than SSH cert, hence the
 `-k` flag (which will prompt you for the password of the `pi` user, `raspberry`
-by default).
+by default). It's currently running in server mode, so visit `http://raspberry`
+in a browser to see the interface.
 
 
 ## Research & Inspiration
