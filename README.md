@@ -7,6 +7,29 @@ This is a 'smart-mirror project' that I am working on during my free-time.
 ...
 
 
+## Installation
+We use an Ansible playbook (`pi.yml`) to configure Raspbian for us. By default
+the playbook uses the `magicmirror` group, so make sure that the Pi's
+hostname/IP is placed under that group in the inventory file. For example, since
+Raspbian's default hostname is `raspberrypi`:
+
+```bash
+# /etc/ansible/hosts
+
+[magicmirror]
+raspberrypi
+```
+
+And you can then run the playbook to configure the Pi:
+```bash
+ansible-playbook pi.yml -k
+```
+
+For now we're authenticating using a password rather than SSH cert, hence the
+`-k` flag (which will prompt you for the password of the `pi` user, `raspberry`
+by default).
+
+
 ## Research & Inspiration
 - [smart-mirror.io](https://docs.smart-mirror.io/docs/hardware.html
 )

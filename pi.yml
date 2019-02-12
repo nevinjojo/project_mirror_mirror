@@ -1,0 +1,14 @@
+---
+- name: configure the Pi
+  hosts: magicmirror
+  remote_user: pi
+  become: yes
+  tasks:
+    - name: upgrade system
+      apt:
+        update_cache: yes
+        upgrade: yes
+    - name: install docker
+      shell: curl -sSL https://get.docker.com | sh
+      args:
+        creates: /usr/bin/docker
