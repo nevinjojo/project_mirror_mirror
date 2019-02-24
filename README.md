@@ -4,8 +4,8 @@ This is a 'smart-mirror project' that I am working on during my free-time.
 
 
 ## Smart Mirror Features
-...
-
+- [iCal integration](https://github.com/bitte-ein-bit/MMM-iCloud-Client)
+- Daily news
 
 ## Installation
 We use an Ansible playbook (`pi.yml`) to configure Raspbian for us. By default
