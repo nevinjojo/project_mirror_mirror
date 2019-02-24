@@ -4,20 +4,25 @@
   remote_user: pi
   become: yes
   tasks:
-    - name: upgrade system
+    - name: install GUI
       apt:
         update_cache: yes
-        upgrade: yes
-    - name: install pip
+        name: raspberrypi-ui-mods
+    - name: remove xscreensaver
       apt:
-        name: python-pip
-    - name: install docker
-      shell: curl -sSL https://get.docker.com | sh
-      args:
-        creates: /usr/bin/docker
-    - name: install docker package (needed by Ansible)
-      pip:
-        name: docker
+        name: xscreensaver
+        state: absent
+    - name: set locale for tmux
+      blockinfile:
+        path: /home/pi/.bashrc
+        block: |
+          export LC_CTYPE=en_GB.UTF-8
+    - name: set screen properties
+      blockinfile:
+        path: /boot/config.txt
+        block: |
+          display_rotate=3
+          avoid_warnings=1
 
 - name: run magic mirror
   hosts: magicmirror
@@ -42,15 +47,11 @@
         src: ./config.js
         dest: "{{ magicmirror_conf }}"
         owner: pi
-    - name: run in server mode as a docker container
-      docker_container:
-        name: magicmirror
-        image: bastilimbach/docker-magicmirror:raspberry
-        restart_policy: unless-stopped
-        ports:
-          - "80:8080"
-        pull: true
-        volumes:
-          - "{{ magicmirror_conf }}:/opt/magic_mirror/config"
-          - "{{ magicmirror_modules }}:/opt/magic_mirror/modules"
-          
+    - name: install modules
+      git:
+        repo: "https://github.com/eouia/MMM-WeatherBackground.git"
+        dest: "{{ magicmirror_modules }}/MMM-WeatherBackground"
+    - name: install MagicMirror
+      shell: bash -c "$(curl -sL https://raw.githubusercontent.com/MichMich/MagicMirror/master/installers/raspberry.sh)"
+      args:
+        creates: /home/pi/MagicMirror
