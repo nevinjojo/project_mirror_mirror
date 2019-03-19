@@ -1,0 +1,3 @@
+[submodule "modules/mmm-weatherchart"]
+	path = modules/mmm-weatherchart
+	url = https://github.com/paphko/mmm-weatherchart.git

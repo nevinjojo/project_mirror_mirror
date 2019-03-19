@@ -1,0 +1,57 @@
+---
+- name: configure the Pi
+  hosts: magicmirror
+  remote_user: pi
+  become: yes
+  tasks:
+    - name: install GUI
+      apt:
+        update_cache: yes
+        name: raspberrypi-ui-mods
+    - name: remove xscreensaver
+      apt:
+        name: xscreensaver
+        state: absent
+    - name: set locale for tmux
+      blockinfile:
+        path: /home/pi/.bashrc
+        block: |
+          export LC_CTYPE=en_GB.UTF-8
+    - name: set screen properties
+      blockinfile:
+        path: /boot/config.txt
+        block: |
+          display_rotate=3
+          avoid_warnings=1
+
+- name: run magic mirror
+  hosts: magicmirror
+  remote_user: pi
+  become: yes
+  vars:
+    magicmirror_root: /etc/magicmirror
+    magicmirror_conf: "{{ magicmirror_root }}/config"
+    magicmirror_modules: "{{ magicmirror_root }}/modules"
+  tasks:
+    - name: create magic mirror directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: pi
+      with_items:
+        - "{{ magicmirror_root }}"
+        - "{{ magicmirror_conf }}"
+        - "{{ magicmirror_modules }}"
+    - name: copy config.js
+      copy:
+        src: ./config.js
+        dest: "{{ magicmirror_conf }}"
+        owner: pi
+    - name: install modules
+      git:
+        repo: "https://github.com/eouia/MMM-WeatherBackground.git"
+        dest: "{{ magicmirror_modules }}/MMM-WeatherBackground"
+    - name: install MagicMirror
+      shell: bash -c "$(curl -sL https://raw.githubusercontent.com/MichMich/MagicMirror/master/installers/raspberry.sh)"
+      args:
+        creates: /home/pi/MagicMirror
