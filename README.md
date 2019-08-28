@@ -4,7 +4,10 @@ This is a 'smart-mirror project' that I am working on during my free-time.
 
 
 ## Smart Mirror Features
-...
+- Display Date & Time
+- Display weather details with icons
+- Display news headlines that changes over 
+- Display background images that changes based on the weather, time of the day etc.
 
 
 ## Research & Inspiration
@@ -19,9 +22,9 @@ This is a 'smart-mirror project' that I am working on during my free-time.
 
 ## To do
 - [x] Research on Hardware, software, implementation cost :+1:
-- [ ] Buy a cheap Monitor, Two-way mirror, Raspberry Pi and Mirror frames
-- [ ] Install Raspbian and dependencies
+- [x] Buy a cheap Monitor, Two-way mirror, Raspberry Pi and Mirror frames
+- [x] Install Raspbian and dependencies
 - [ ] Configure Pi, Sound & Speech recognition
-- [ ] Configure the smart mirror
-- [ ] Run the smart mirror
+- [x] Configure the smart mirror
+- [x] Run the smart mirror
 - [ ] Fix bugs & handle troubleshooting
